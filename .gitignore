@@ -1,0 +1,21 @@
+# Ignorowanie plików specyficznych dla Android Studio
+*.iml
+.gradle/
+.idea/
+.local.properties
+
+# Ignorowanie plików systemowych
+.DS_Store
+Thumbs.db
+
+# Ignorowanie folderów build
+/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Ignorowanie plików generowanych przez Gradle
+local.properties
+
+# Ignorowanie folderów specyficznych dla Android Studio (jeśli są w katalogu głównym repozytorium)
+.idea/
