@@ -69,7 +69,6 @@ yarn-debug.*
 yarn-error.*
 
 # macOS
-.DS_Store
 *.pem
 
 # local env files
@@ -79,3 +78,87 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+HELP.md
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Visual Studio pliki
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.ide
+*.cache
+
+# Build
+bin/
+obj/
+out/
+*.pdb
+*.exe
+*.dll
+*.log
+
+# ASP.NET Core
+appsettings*.json
+secrets.json
+.env
+
+# NuGet
+packages/
+project.lock.json
+project.assets.json
+nuget.config
+
+# TypeScript / Frontend
+node_modules/
+wwwroot/lib/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+Dockerfile
+
+# OS / System
+Thumbs.db
+*.DS_Store
+
+# Rider/JetBrains
+.idea/
+*.iml
