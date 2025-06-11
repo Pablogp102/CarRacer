@@ -19,13 +19,13 @@ public class Converters {
 
     public Measurement toDomainModel(MeasurementEntity entity) {
         MeasurementType type = MeasurementType.valueOf(entity.type);
-        return new Measurement(type, entity.durationMs, entity.peakSpeedKmh, entity.distanceMeters, entity.timestamp);
+        return new Measurement(type, entity.durationS, entity.peakSpeedKmh, entity.distanceMeters, entity.timestamp);
     }
 
     public MeasurementEntity fromDomainModel(Measurement measurement) {
         MeasurementEntity entity = new MeasurementEntity();
         entity.type = measurement.getType().name(); // enum → string
-        entity.durationMs = measurement.getDurationMs();
+        entity.durationS = measurement.getDurationMs();
         entity.peakSpeedKmh = measurement.getPeakSpeedKmh();
         entity.distanceMeters = measurement.getDistanceMeters();
         entity.timestamp = measurement.getTimestamp();

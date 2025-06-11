@@ -3,23 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_race">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.carracer.presentation.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_race"
+        android:name="com.carracer.presentation.ui.race.RaceFragment"
+        android:label="@string/title_race"
+        tools:layout="@layout/fragment_race" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.carracer.presentation.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_leaderboard"
+        android:name="com.carracer.presentation.ui.leaderboard.LeaderboardFragment"
+        android:label="@string/title_leaderboard"
+        tools:layout="@layout/fragment_leaderboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.carracer.presentation.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_account"
+        android:name="com.carracer.presentation.ui.account.AccountFragment"
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_account"/>
+
 </navigation>

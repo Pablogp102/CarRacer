@@ -13,6 +13,7 @@ captures/
 
 # Ignorowanie plików generowanych przez Gradle
 local.properties
+secrets.properties
 
 # Ignorowanie plików generowanych przez Android Studio
 .gradle/
@@ -136,7 +137,6 @@ out/
 *.log
 
 # ASP.NET Core
-appsettings*.json
 secrets.json
 .env
 

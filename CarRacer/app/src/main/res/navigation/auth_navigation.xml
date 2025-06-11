@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_navigation"
+    app:startDestination="@+id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.carracer.presentation.ui.splash.SplashFragment"
+        android:label="Splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_login_fragment"
+            app:destination="@id/login_fragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.carracer.presentation.ui.login.LoginFragment"
+        android:label="Logowanie"
+        tools:layout="@layout/fragment_login">
+        <!-- Akcja do registerFragment zostanie obsłużona w kodzie LoginFragment -->
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/register_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register_fragment"
+        android:name="com.carracer.presentation.ui.register.RegisterFragment"
+        android:label="Rejestracja"
+        tools:layout="@layout/fragment_register">
+        <!-- Akcja powrotu do loginFragment z czyszczeniem stosu -->
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/login_fragment"
+            app:popUpTo="@id/login_fragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+</navigation>

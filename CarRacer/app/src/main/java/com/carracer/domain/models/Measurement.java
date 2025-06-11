@@ -4,16 +4,16 @@ import com.carracer.domain.utils.MeasurementType;
 
 public class Measurement {
     private MeasurementType type;
-    private long durationMs;
+    private float durationS;
     private float peakSpeedKmh;
     private double distanceMeters;
     private long timestamp;
 
     public Measurement() {}
 
-    public Measurement(MeasurementType type, long durationMs, float peakSpeedKmh, double distanceMeters, long timestamp) {
+    public Measurement(MeasurementType type, float durationS, float peakSpeedKmh, double distanceMeters, long timestamp) {
         this.type = type;
-        this.durationMs = durationMs;
+        this.durationS = durationS;
         this.peakSpeedKmh = peakSpeedKmh;
         this.distanceMeters = distanceMeters;
         this.timestamp = timestamp;
@@ -22,8 +22,8 @@ public class Measurement {
         return type;
     }
 
-    public long getDurationMs() {
-        return durationMs;
+    public float getDurationMs() {
+        return durationS;
     }
 
     public float getPeakSpeedKmh() {

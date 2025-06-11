@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:fitsSystemWindows="true"
+    tools:context=".presentation.ui.account.AccountFragment">
+
+    <!-- Teksty na górze -->
+    <LinearLayout
+        android:id="@+id/text_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttons_container"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:id="@+id/text_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zalogowany jako: Racer123"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/text_since"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jesteś Racerem od: 2024-01-15"
+            android:textSize="24sp"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <!-- Przyciski na dole -->
+    <LinearLayout
+        android:id="@+id/buttons_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/button_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wyloguj się"
+            android:textSize="22sp"
+            android:layout_marginBottom="12dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp" />
+
+        <Button
+            android:id="@+id/button_delete_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Usuń konto 😢"
+            android:textSize="22sp"
+            android:layout_marginBottom="50dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
