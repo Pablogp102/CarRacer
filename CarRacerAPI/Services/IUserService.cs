@@ -31,7 +31,7 @@ public class UserService : IUserService
         var user = await _userRepository.GetByLoginAsync(login);
         if (user == null)
         {
-            return new LoginResponse { IsSuccess = false, Message = "Invalid login or password."};
+            return new LoginResponse { IsSuccess = false, Message = "There is no user with provided login. If you dont have account just become a Racer (register)"};
         }
 
         if (!_passwordHasher.VerifyPassword(user.Password, plainPassword))

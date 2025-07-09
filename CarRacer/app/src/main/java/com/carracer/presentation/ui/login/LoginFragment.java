@@ -5,89 +5,89 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-
 import com.carracer.R;
-import com.carracer.domain.models.User;
-import com.carracer.domain.utils.Callback;
-import com.carracer.infrastructure.services.AuthService;
+import com.carracer.databinding.FragmentLoginBinding; // ZMIANA: Używamy ViewBinding
 import com.carracer.presentation.MainActivity;
-
-import javax.inject.Inject;
-
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginFragment extends Fragment {
 
-    private EditText usernameEditText;
-    private EditText passwordEditText;
-    private Button loginButton;
-    private Button registerLinkButton;
-    private ProgressBar loginProgressBar;
-
-    @Inject
-    AuthService authService;
+    private LoginViewModel viewModel;
+    private FragmentLoginBinding binding; // ZMIANA: Używamy ViewBinding
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-
-        usernameEditText = view.findViewById(R.id.usernameEditText);
-        passwordEditText = view.findViewById(R.id.passwordEditText);
-        loginButton = view.findViewById(R.id.loginButton);
-        registerLinkButton = view.findViewById(R.id.registerLink);
-        loginProgressBar = view.findViewById(R.id.loginProgressBar);
-
-        return view;
+        // ZMIANA: Inicjalizacja ViewBinding
+        binding = FragmentLoginBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loginButton.setOnClickListener(v -> {
-            String login = usernameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
+        // Krok 1: Pobieramy instancję naszego nowego ViewModelu
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
-            if (login.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext(), "Proszę podać login i hasło.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        setupListeners();
+        setupObservers();
+    }
 
-            loginProgressBar.setVisibility(View.VISIBLE);
-            authService.login(login, password, new Callback<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    loginProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(), "Logowanie udane!", Toast.LENGTH_SHORT).show();
-                    // Przejdź do MainActivity i zakończ AuthActivity
-                    Intent intent = new Intent(requireActivity(), MainActivity.class);
-                    startActivity(intent);
-                    requireActivity().finish(); // Zamyka AuthActivity
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    loginProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(), "Logowanie nieudane: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+    private void setupListeners() {
+        // Krok 2: Listener przycisku jest teraz bardzo prosty - tylko deleguje pracę
+        binding.loginButton.setOnClickListener(v -> {
+            String login = binding.usernameEditText.getText().toString();
+            String password = binding.passwordEditText.getText().toString();
+            viewModel.login(login, password);
         });
 
-        registerLinkButton.setOnClickListener(v -> {
-            // Nawiguj do RegisterFragment za pomocą akcji Navigation Component
+        binding.registerLink.setOnClickListener(v -> {
             NavHostFragment.findNavController(LoginFragment.this)
                     .navigate(R.id.action_loginFragment_to_registerFragment);
         });
+    }
+
+    private void setupObservers() {
+        // Krok 3: Cała magia dzieje się w obserwatorach, które są bezpieczne wątkowo
+
+        // Obserwator paska ładowania
+        viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            binding.loginProgressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            binding.loginButton.setEnabled(!isLoading);
+        });
+
+        // Obserwator błędu - on teraz bezpiecznie pokazuje Toasta
+        viewModel.getErrorEvent().observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                viewModel.onErrorShown(); // "Konsumujemy" zdarzenie
+            }
+        });
+
+        // Obserwator sukcesu - on teraz bezpiecznie nawiguje
+        viewModel.getNavigateToMainEvent().observe(getViewLifecycleOwner(), success -> {
+            if (success != null && success) {
+                Toast.makeText(getContext(), "Logowanie udane!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                requireActivity().finish();
+                viewModel.onNavigationComplete(); // "Konsumujemy" zdarzenie
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null; // Czyszczenie dla ViewBinding
     }
 }

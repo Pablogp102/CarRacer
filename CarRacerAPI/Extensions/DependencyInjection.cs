@@ -10,6 +10,8 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPasswordHasher, PasswordHasherWrapper>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IMeasurementService, MeasurementService>();
+        services.AddScoped<IMeasurementRepository, MeasurementRepository>();
 
         return services;
     }

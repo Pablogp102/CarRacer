@@ -56,6 +56,8 @@ namespace CarRacerAPI.Database
                       .WithMany(u => u.Measurements)
                       .HasForeignKey(m => m.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(m => new { m.UserId, m.ClientGeneratedId }).IsUnique();
             });
         }
 

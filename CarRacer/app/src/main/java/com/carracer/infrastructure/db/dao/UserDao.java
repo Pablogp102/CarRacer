@@ -18,4 +18,7 @@ public interface UserDao {
 
     @Query("DELETE FROM users")
     void deleteCurrentUser();
+
+    @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
+    UserEntity getUserByIdSync(String userId);
 }

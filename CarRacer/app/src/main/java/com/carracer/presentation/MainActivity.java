@@ -41,14 +41,17 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_race, R.id.navigation_leaderboard, R.id.navigation_account)
+                R.id.navigation_race, R.id.navigation_leaderboard, R.id.navigation_account, R.id.measurement_fragment)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.login_fragment || destination.getId() == R.id.register_fragment) {
+            if (destination.getId() == R.id.login_fragment ||
+                destination.getId() == R.id.register_fragment ||
+                destination.getId() == R.id.measurement_fragment)
+            {
                 navView.setVisibility(View.GONE);
             } else {
                 navView.setVisibility(View.VISIBLE);
@@ -65,14 +68,4 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isFinishing()) {
-            authService.logout();
-            Log.d("MainActivity", "Logout triggered because MainActivity is finishing.");
-        }
-    }
-
 }

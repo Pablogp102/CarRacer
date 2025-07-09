@@ -4,6 +4,7 @@ using CarRacerAPI.Enums;
 public class Measurements
 {
     public long Id { get; set; }
+    public Guid? ClientGeneratedId { get; set; }
 
     public MeasurementType Type { get; set; }
 
@@ -16,7 +17,7 @@ public class Measurements
     public DateTime MeasuredAt { get; set; }
 
     public Guid UserId { get; set; }
-    public Users User { get; set; }
+    public required Users User { get; set; }
 }
 
 

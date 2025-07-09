@@ -27,6 +27,7 @@ public class UserRepository : IUserRepository
     public async Task<Users?> GetByLoginAsync(string login)
     {
         return await _context.Users
+            .Include(u => u.Measurements)
             .FirstOrDefaultAsync(u => u.Login == login);
     }
 
@@ -53,7 +54,6 @@ public class UserRepository : IUserRepository
         {
             return false;
         }
-
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
         return true;

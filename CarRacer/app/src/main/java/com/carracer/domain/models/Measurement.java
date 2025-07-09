@@ -2,7 +2,11 @@ package com.carracer.domain.models;
 
 import com.carracer.domain.utils.MeasurementType;
 
-public class Measurement {
+import java.io.Serializable;
+import java.util.UUID;
+
+public class Measurement implements Serializable {
+    private UUID id;
     private MeasurementType type;
     private float durationS;
     private float peakSpeedKmh;
@@ -11,7 +15,8 @@ public class Measurement {
 
     public Measurement() {}
 
-    public Measurement(MeasurementType type, float durationS, float peakSpeedKmh, double distanceMeters, long timestamp) {
+    public Measurement(UUID id, MeasurementType type, float durationS, float peakSpeedKmh, double distanceMeters, long timestamp) {
+        this.id = id;
         this.type = type;
         this.durationS = durationS;
         this.peakSpeedKmh = peakSpeedKmh;
@@ -22,8 +27,12 @@ public class Measurement {
         return type;
     }
 
-    public float getDurationMs() {
+    public float getDurationS() {
         return durationS;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public float getPeakSpeedKmh() {

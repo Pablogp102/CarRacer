@@ -24,7 +24,7 @@ public class LocationData {
     public double getLongitude() { return longitude; }
     public float getSpeedKmh() { return speedKmh; }
     public double getTotalDistanceMeters() { return totalDistanceMeters; }
-    public float getTimestamp() { return Math.round((timestamp / 100.0f)) / 10.0f; }
+    public long getTimestamp() { return timestamp; }
     public double getDeltaDistanceMeters() { return deltaDistanceMeters; }
 }
 

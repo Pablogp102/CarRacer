@@ -5,10 +5,13 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "measurements")
 public class MeasurementEntity {
-    @PrimaryKey(autoGenerate = true)
-    public long id;
+    @PrimaryKey
+    @NonNull
+    public String  id;
 
     @ColumnInfo(name = "type")
     public String type;
@@ -31,4 +34,18 @@ public class MeasurementEntity {
 
     @ColumnInfo(name = "is_synced")
     public boolean isSynced;
+    public MeasurementEntity() {}
+
+    public MeasurementEntity(String type, float durationS,
+                             float peakSpeedKmh, double distanceMeters, long timestamp,
+                             @NonNull String userId) {
+        this.id = UUID.randomUUID().toString();
+        this.type = type;
+        this.durationS = durationS;
+        this.peakSpeedKmh = peakSpeedKmh;
+        this.distanceMeters = distanceMeters;
+        this.timestamp = timestamp;
+        this.userId = userId;
+        this.isSynced = false;
+    }
 }

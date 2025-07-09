@@ -5,22 +5,42 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_race">
 
+    <!-- Fragment Race (główny ekran wyścigu) -->
     <fragment
         android:id="@+id/navigation_race"
         android:name="com.carracer.presentation.ui.race.RaceFragment"
         android:label="@string/title_race"
-        tools:layout="@layout/fragment_race" />
+        tools:layout="@layout/fragment_race">
+        <!-- Akcja nawigacji z RaceFragment do MeasurementFragment, przekazująca typ pomiaru -->
+        <action
+            android:id="@+id/action_navigation_race_to_measurementFragment"
+            app:destination="@id/measurement_fragment" />
+    </fragment>
 
+    <!-- Fragment Leaderboard -->
     <fragment
         android:id="@+id/navigation_leaderboard"
         android:name="com.carracer.presentation.ui.leaderboard.LeaderboardFragment"
         android:label="@string/title_leaderboard"
         tools:layout="@layout/fragment_leaderboard" />
 
+    <!-- Fragment Account -->
     <fragment
         android:id="@+id/navigation_account"
         android:name="com.carracer.presentation.ui.account.AccountFragment"
         android:label="@string/title_account"
         tools:layout="@layout/fragment_account"/>
+
+    <!-- Fragment Pomiaru (gdzie odbywa się odliczanie i sam pomiar) -->
+    <fragment
+        android:id="@+id/measurement_fragment"
+        android:name="com.carracer.presentation.ui.race.measurement.MeasurementFragment"
+        android:label="Pomiar"
+        tools:layout="@layout/fragment_measurement">
+        <!-- Argument 'measurementType' do przekazania z RaceFragment -->
+        <argument
+            android:name="measurementType"
+            app:argType="com.carracer.domain.utils.MeasurementType" />
+    </fragment>
 
 </navigation>

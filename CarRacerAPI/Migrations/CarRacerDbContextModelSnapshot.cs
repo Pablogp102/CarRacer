@@ -30,6 +30,9 @@ namespace CarRacerAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<Guid?>("ClientGeneratedId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("DistanceMeters")
                         .HasColumnType("float");
 
@@ -53,7 +56,9 @@ namespace CarRacerAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "ClientGeneratedId")
+                        .IsUnique()
+                        .HasFilter("[ClientGeneratedId] IS NOT NULL");
 
                     b.ToTable("Measurements", (string)null);
                 });

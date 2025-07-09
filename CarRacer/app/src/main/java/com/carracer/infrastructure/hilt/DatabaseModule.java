@@ -4,12 +4,13 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import com.carracer.domain.utils.Converters;
 import com.carracer.infrastructure.db.CarRacerDatabase;
-import com.carracer.infrastructure.db.DatabaseClient;
 import com.carracer.infrastructure.db.dao.MeasurementDao;
 import com.carracer.infrastructure.db.dao.UserDao;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
 
@@ -24,8 +25,11 @@ import dagger.hilt.components.SingletonComponent;
 public class DatabaseModule {
     @Provides
     @Singleton
-    public CarRacerDatabase provideAppDatabase(@ApplicationContext Context context) {
-        return DatabaseClient.getInstance(context).getDatabase();
+    public CarRacerDatabase provideAppDatabase(@ApplicationContext Context context, Converters converters) {
+        return Room.databaseBuilder(context.getApplicationContext(), CarRacerDatabase.class, "carracer_db")
+                .fallbackToDestructiveMigration() // Pamiętaj o obsłudze migracji w produkcji!
+                //.addTypeConverter(converters) // Dodaj konwertery dla Room
+                .build();
     }
 
     @Provides
@@ -42,7 +46,7 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    public ExecutorService provideDatabaseExecutor(@ApplicationContext Context context) {
-        return DatabaseClient.getInstance(context).getDatabaseExecutor();
+    public ExecutorService provideDatabaseExecutor() {
+        return Executors.newFixedThreadPool(2); // Używaj sensownej liczby wątków
     }
 }

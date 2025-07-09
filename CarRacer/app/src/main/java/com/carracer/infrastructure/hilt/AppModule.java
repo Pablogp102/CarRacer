@@ -2,8 +2,8 @@ package com.carracer.infrastructure.hilt;
 
 import android.content.Context;
 
-import com.carracer.infrastructure.network.ApiService;
-import com.carracer.infrastructure.network.RetrofitClient;
+import com.carracer.application.gps.IGPSManager;
+import com.carracer.infrastructure.gps.GPSManager;
 import com.carracer.infrastructure.network.storage.TokenStorage;
 
 import javax.inject.Singleton;
@@ -21,9 +21,10 @@ public class AppModule {
     public TokenStorage provideTokenStorage(@ApplicationContext Context context) {
         return new TokenStorage(context);
     }
+
     @Provides
     @Singleton
-    public ApiService provideApiService(TokenStorage tokenStorage) {
-        return RetrofitClient.getApiService(tokenStorage);
+    public IGPSManager provideGPSManager(@ApplicationContext Context context) {
+        return new GPSManager(context);
     }
 }

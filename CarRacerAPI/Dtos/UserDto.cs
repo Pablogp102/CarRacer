@@ -18,12 +18,12 @@ public class UserDto
             Measurements = userEntity.Measurements?
                                .Select(m => new MeasurementDto
                                {
-                                   Id = m.Id,
+                                   Id = m.ClientGeneratedId,
                                    Type = m.Type.ToString(), 
                                    DurationS = m.DurationS,
                                    PeakSpeedKmh = m.PeakSpeedKmh,
                                    DistanceMeters = m.DistanceMeters,
-                                   MeasuredAt = m.MeasuredAt 
+                                   MeasuredAt = new DateTimeOffset(m.MeasuredAt).ToUnixTimeMilliseconds()
                                })
                                .ToList() ?? new List<MeasurementDto>()
         };

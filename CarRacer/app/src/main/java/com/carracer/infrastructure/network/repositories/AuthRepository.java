@@ -2,10 +2,14 @@ package com.carracer.infrastructure.network.repositories;
 
 import android.util.Log;
 
+import com.carracer.domain.models.Measurement;
 import com.carracer.domain.models.User;
 import com.carracer.domain.repositories.IAuthRepository;
 import com.carracer.domain.utils.Callback;
+import com.carracer.domain.utils.MeasurementType;
+import com.carracer.infrastructure.network.models.Dtos.MeasurementDto;
 import com.carracer.infrastructure.network.models.Dtos.UserDto;
+import com.carracer.infrastructure.network.models.LoginModel;
 import com.carracer.infrastructure.network.models.Requests.DeleteRequest;
 import com.carracer.infrastructure.network.models.Responses.DeleteResponse;
 import com.carracer.infrastructure.network.storage.TokenStorage;
@@ -15,6 +19,9 @@ import com.carracer.infrastructure.network.models.Responses.AuthResponse;
 
 import org.json.JSONObject;
 import javax.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -30,9 +37,8 @@ public class AuthRepository  implements IAuthRepository {
         this.apiService = apiService;
         this.tokenStorage = tokenStorage;
     }
-
     @Override
-    public void login(String login, String password, Callback<User> callback) {
+    public void login(String login, String password, Callback<LoginModel> callback) {
         apiService.login(new AuthRequest(login, password)).enqueue(new retrofit2.Callback<AuthResponse>() {
             @Override
             public void onResponse(retrofit2.Call<AuthResponse> call, retrofit2.Response<AuthResponse> response) {
@@ -41,7 +47,6 @@ public class AuthRepository  implements IAuthRepository {
                     if (authResponse.isSuccess()) {
                         String token = authResponse.getToken();
                         UserDto userDto = authResponse.getUser();
-
                         if(token != null) {
                             tokenStorage.saveToken(token);
                         } else {
@@ -53,6 +58,8 @@ public class AuthRepository  implements IAuthRepository {
                             try {
                                 if(userDto.getId() != null) {
                                     userId = UUID.fromString(userDto.getId());
+                                    tokenStorage.saveUserId(userId.toString()); // <-- TERAZ ZAPISUJEMY ID UŻYTKOWNIKA
+                                    Log.d(TAG, "DEBUG: User ID " + userId.toString() + " zapisano w TokenStorage.");
                                 } else {
                                     callback.onError(new Exception("User ID is null after successful login."));
                                     return;
@@ -66,9 +73,28 @@ public class AuthRepository  implements IAuthRepository {
                             long createdAtMillis = userDto.getCreatedAt();
                             Log.d(TAG, "UserDto createdAt (long): " + createdAtMillis);
 
-
                             User domainUser = new User(userId, userDto.getLogin(), createdAtMillis);
-                            callback.onSuccess(domainUser);
+
+                            List<Measurement> domainMeasurements = new ArrayList<>();
+                            if (userDto.getMeasurements() != null) {
+                                for (MeasurementDto dto : userDto.getMeasurements()) {
+                                    try {
+                                        domainMeasurements.add(new Measurement(
+                                                UUID.fromString(dto.getId()),
+                                                MeasurementType.valueOf(dto.getType()),
+                                                (float) dto.getDurationS(),
+                                                (float) dto.getPeakSpeedKmh(),
+                                                dto.getDistanceMeters(),
+                                                dto.getMeasuredAt()
+                                        ));
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "Błąd mapowania pojedynczego pomiaru, pomijam: " + e.getMessage());
+                                    }
+                                }
+                            }
+                            LoginModel loginModel = new LoginModel(domainUser, domainMeasurements);
+                            callback.onSuccess(loginModel);
+
                         } else {
                             Log.w(TAG, "Login successful (isSuccess=true), but user data (UserDto) was null.");
                             callback.onError(new Exception("Login successful, but user data was missing."));
@@ -128,6 +154,8 @@ public class AuthRepository  implements IAuthRepository {
                             try {
                                 if (userDto.getId() != null) {
                                     userId = UUID.fromString(userDto.getId());
+                                    tokenStorage.saveUserId(userId.toString()); // <-- TERAZ ZAPISUJEMY ID UŻYTKOWNIKA
+                                    Log.d(TAG, "DEBUG: User ID " + userId.toString() + " zapisano w TokenStorage.");
                                 } else {
                                     callback.onError(new Exception("User ID is null during registration."));
                                     return;
@@ -177,6 +205,7 @@ public class AuthRepository  implements IAuthRepository {
 
     public void logout() {
         tokenStorage.clearToken();
+        tokenStorage.clearUserId();
     }
 
     @Override
@@ -187,6 +216,7 @@ public class AuthRepository  implements IAuthRepository {
                 if (response.isSuccessful()) {
                     DeleteResponse deleteResponse = response.body();
                     if (deleteResponse != null && deleteResponse.isSuccess()) {
+                        tokenStorage.clearUserId();
                         callback.onSuccess(null); // Sukces, przekazujemy null zgodnie z Callback<Void>
                     } else if (deleteResponse != null) {
                         // API zwróciło isSuccess=false, ale nie błąd HTTP, przekazujemy wiadomość z API jako błąd

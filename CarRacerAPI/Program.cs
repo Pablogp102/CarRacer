@@ -1,7 +1,14 @@
+using Azure.Identity;
+
 using CarRacerAPI.Database;
 using CarRacerAPI.Extensions;
+using CarRacerAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string keyVaultUri = builder.Configuration["KeyVaultUri"];
+
+builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
@@ -22,6 +29,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseAuthorization();
 

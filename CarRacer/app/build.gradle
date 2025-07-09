@@ -3,6 +3,7 @@ plugins {
     id 'com.google.dagger.hilt.android'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs'
 }
 
 def secretsPropertiesFile = rootProject.file("secrets.properties")
@@ -25,9 +26,10 @@ android {
         targetSdk 35
         versionCode 1
         versionName "1.0"
-        def baseUrl = secrets['BASE_URL'] ?: "http://10.0.2.2:5000/"
-
+        def baseUrl = secrets['BASE_URL'] ?: "https://10.0.2.2:7128/"
         buildConfigField "String", "BASE_URL", "\"${baseUrl}\""
+        def apiKey = secrets['API_KEY'] ?: "default_fallback_key"
+        buildConfigField "String", "API_KEY", "\"${apiKey}\""
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -35,6 +37,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            def baseUrl = secrets['BASE_URL'] ?: "https://10.0.2.2:7128/"
+            buildConfigField "String", "BASE_URL", "\"${baseUrl}\""
         }
     }
     compileOptions {

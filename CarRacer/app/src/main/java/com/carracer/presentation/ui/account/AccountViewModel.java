@@ -22,7 +22,12 @@ public class AccountViewModel extends ViewModel {
     private final IUserService userService;
     private final MutableLiveData<String> username = new MutableLiveData<>();
     private final MutableLiveData<String> createdAt = new MutableLiveData<>();
-
+    private final MutableLiveData<String> _errorMessage = new MutableLiveData<>();
+    public LiveData<String> getErrorMessage() { return _errorMessage; }
+    private final MutableLiveData<Integer> _showSyncDialogEvent = new MutableLiveData<>();
+    public LiveData<Integer> getShowSyncDialogEvent() { return _showSyncDialogEvent; }
+    private final MutableLiveData<Boolean> _navigateToLoginEvent = new MutableLiveData<>();
+    public LiveData<Boolean> getNavigateToLoginEvent() { return _navigateToLoginEvent; }
     private LiveData<User> currentUserSourceLiveData;
     private Observer<User> userObserver;
 
@@ -69,15 +74,49 @@ public class AccountViewModel extends ViewModel {
         }
     }
 
-    public void logout() {
-        authService.logout();
-        username.setValue("Gościu");
-        createdAt.setValue("Nieznany");
+    public void initiateLogout() {
+        authService.logout(new Callback<Integer>() {
+            @Override
+            public void onSuccess(Integer unsyncedCount) {
+                if (unsyncedCount > 0) {
+                    // Mamy niesynchronizowane dane - pokaż dialog
+                    _showSyncDialogEvent.postValue(unsyncedCount);
+                } else {
+                    // Nie ma nic do synchronizacji - wyloguj od razu
+                    finalizeLogout(false);
+                }
+            }
+            @Override
+            public void onError(Throwable t) {
+                _errorMessage.postValue("Błąd przy sprawdzaniu danych: " + t.getMessage());
+                // Mimo błędu, pozwalamy na wylogowanie
+                finalizeLogout(false);
+            }
+        });
+    }
+
+    public void finalizeLogout(boolean shouldSync) {
+        authService.finalizeLogout(shouldSync, new Callback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                _navigateToLoginEvent.postValue(true);
+            }
+            @Override
+            public void onError(Throwable t) {
+                _errorMessage.postValue("Błąd podczas wylogowywania: " + t.getMessage());
+            }
+        });
     }
 
     public void deleteAccount(Callback<String> callback) {
         authService.deleteAccount(callback);
     }
+
+    public void onNavigateToLoginConsumed() { _navigateToLoginEvent.setValue(null); }
+    public void onShowSyncDialogConsumed() { _showSyncDialogEvent.setValue(null); }
+    public void clearErrorMessage() { _errorMessage.setValue(null); }
+
+
     public LiveData<String> getUsername() {
         return username;
     }
